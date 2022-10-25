@@ -6,6 +6,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+/*
+ * A basic schema design for jpa to implement on our mysql database. 
+ * We use @Id to indicate what the PRIMARY KEY (PK) will be 
+ * @Column (name = "...") just indicated the title of each column in the schema 
+ * Having getters and setters here should futher implmentation be desired 
+ */
 @Entity 
 public class Battery {
     @Id
