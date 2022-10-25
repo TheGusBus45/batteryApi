@@ -47,7 +47,10 @@ public class ApiController {
             //Save the new list to a tempList to pass around 
             tempList = list.stream().filter(b -> (b.getPostcode() >= p1)&&(b.getPostcode() <= p2))
             .collect(Collectors.toList());
-            if(tempList.size() != 0){
+            if(tempList.size() == 0){
+                temp.append("Error: No batteries in list");
+            }
+            if((p1 >= 1000)&&(p2 >=1000)){
                 //The tempList has all the batteries within range, and we append their details in a clean format
                 tempList.forEach(n-> temp.append("++++++++++++++++++++++" +"\n"
                                         + "Name: " +String.valueOf(n.getName()) +"\n"
@@ -64,11 +67,8 @@ public class ApiController {
                 temp.append("\n"+"Average Wattage: "+String.valueOf(averageWattage)); 
                 temp.append("\n"+"Number of batteries: "+tempList.size());
                 //If the postcodes are unrealistically out of range
-            }else if((p1 <= 1000)||(p2 <1000)){
+            }else{
                 temp.append("Error: Can't have a postcode range <1000");
-            }
-            else{
-                temp.append("Error: No batteries in list");
             }
         }catch(Exception e){
             temp.append(e.toString());
@@ -83,20 +83,21 @@ public class ApiController {
     public String saveBattery(@RequestBody List<Battery> batteries){
         //should the user not actually put anything
         String temp = "List was null, please add batteries correctly";
-        if(batteries.size() != 0 ){
+        if(batteries.size() == 0 ){
             temp = "List was empty, please add batteries";
-        }
-        //if there is a null list
-        if(batteries != null){
-            try{
-                //add each battery to our database
-                batteries.forEach(battery -> repo.save(battery));
-                temp = "batteries succesfully added";
-            }catch (NullPointerException e){
-                temp = "THERE WAS AN ERROR IN THE LIST: "+e.toString(); 
+        }else{
+            //if there is a null list
+            if(batteries != null){
+                try{
+                    //add each battery to our database
+                    batteries.forEach(battery -> repo.save(battery));
+                    temp = "batteries succesfully added";
+                }catch (NullPointerException e){
+                    temp = "THERE WAS AN ERROR IN THE LIST: "+e.toString(); 
+                }
             }
         }
-        //let the user know that it worked
+        //let the user know that it worked (or failed)
         return temp; 
     }
 }
